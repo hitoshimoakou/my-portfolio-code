@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>雪かき依頼フォーム</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>雪かき依頼フォーム</h1>
+
+  <label>お名前</label>
+  <input type="text" id="name" name="name">
+
+  <label>住所（簡単に）</label>
+  <input type="text" id="address" name="address">
+
+  <label>希望日時</label>
+  <input type="datetime-local" id="date" name="date">
+
+  <label>報酬（円）</label>
+  <input type="number" id="reward" name="reward">
+
+  <label>依頼内容の詳細</label>
+  <textarea id="details" name="details"></textarea>
+
+  <button onclick="submitForm()">依頼を送信</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    function submitForm() {
+      const name = document.getElementById('name').value;
+      const address = document.getElementById('address').value;
+      const date = document.getElementById('date').value;
+      const reward = document.getElementById('reward').value;
+      const details = document.getElementById('details').value;
+
+      const params = new URLSearchParams();
+      params.append("name", name);
+      params.append("address", address);
+      params.append("date", date);
+      params.append("reward", reward);
+      params.append("details", details);
+
+      fetch('https://script.google.com/macros/s/AKfycbx5hQw5Ntg_ZNB8-VmJKc1l0ngidZ_Cgmo18vZW1mJA3TnQDaMLZxfZZFHxpvSx1Y_6/exec', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: params
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          document.getElementById('result').innerHTML = '<p>送信が完了しました！</p>';
+        } else {
+          document.getElementById('result').innerHTML = `<p>送信に失敗しました：${data.message}</p>`;
+        }
+      })
+      .catch(error => {
+        console.error('エラー:', error);
+        document.getElementById('result').innerHTML = '<p>エラーが発生しました。</p>';
+      });
+    }
+  </script>
+</body>
+</html>
